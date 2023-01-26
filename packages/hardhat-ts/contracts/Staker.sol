@@ -10,22 +10,27 @@ import './ExampleExternalContract.sol';
 contract Staker {
   ExampleExternalContract public exampleExternalContract;
 
-  mapping(address => uint256) public balances;
-  uint256 public constant threshold = 1 ether;
-
   constructor(address exampleExternalContractAddress) public {
     exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
   }
 
+  mapping(address => uint256) public balances;
+  uint256 public constant threshold = 1 ether;
+
+  event Stake(address indexed _staker, uint256 amount);
+
   // TODO: Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
   //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
-  function stake(uint256 _amount) public {
-    
-    // require(_amount < balances[msg.sender], "DevToken: Cannot stake more than you own");
+  function stake() public payable {
+    require(address(this).balance <= threshold, 'yOU CANT STAKE MORE!');
+    balances[msg.sender] += msg.value;
+    emit Stake(msg.sender, msg.value);
   }
 
   // TODO: After some `deadline` allow anyone to call an `execute()` function
   //  It should call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
+  function execute() public
+
 
   // TODO: if the `threshold` was not met, allow everyone to call a `withdraw()` function
 
